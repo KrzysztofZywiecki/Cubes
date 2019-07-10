@@ -1,14 +1,35 @@
 #version 450 core
 
-layout(local_size_x = 1,  local_size_y = 1, local_size_z = 1) in;
+layout(local_size_x = 16,  local_size_y = 1, local_size_z = 1) in;
 
-layout(std430, binding = 2) buffer tablica
+uniform float time;
+
+layout(std430, binding = 0) buffer pos
 {
-	vec4 data;
+	vec4 positions[];
+};
+
+layout(std430, binding = 1) buffer vel
+{
+	vec4 velocities[];
+};
+
+layout(std430, binding = 2) buffer rem
+{
+	bool removing[];
 };
 
 void main()
 {
-	data = vec4(2.0, 2.0f, 2.0f, 2.0f);
+    uint index = gl_GlobalInvocationID.x;
+	velocities[index].y -= time*10.0f;
+	positions[index] += velocities[index]*time;
+
+    if(positions[index].y<(-20.0f))
+    {
+        removing[index] = true;
+        positions[index] = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    }
+
 }
 

@@ -42,12 +42,17 @@
 			<Add library="opengl32" />
 			<Add directory="lib-mingw" />
 		</Linker>
+		<Unit filename="Shaders/cube.frag" />
+		<Unit filename="Shaders/cube.vert" />
+		<Unit filename="Shaders/terrain.comp" />
 		<Unit filename="glad.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="include/BasicShader.h" />
 		<Unit filename="include/ComputeShader.h" />
 		<Unit filename="include/Shader.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/BasicShader.cpp" />
 		<Unit filename="src/ComputeShader.cpp" />
 		<Unit filename="src/Shader.cpp" />
 		<Extensions>

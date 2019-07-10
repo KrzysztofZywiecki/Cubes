@@ -27,7 +27,6 @@ unsigned int compileShader(const std::string& title, unsigned int type)
     {
         getline(file, line);
         source.append(line + '\n');
-        std::cout<<line<<std::endl;
     }
     const char* src = source.c_str();
     glShaderSource(shader, 1, &src, nullptr);
