@@ -27,25 +27,26 @@ class Cubes
 {
 public:
     void addCube(Vector4f initialVelocity);
-    const std::vector<Vector4f>& getPositions();
-    const std::vector<Vector4f>& getVelocities();
-    const std::vector<char>& getToReposition();
+    std::vector<Vector4f>& getPositions();
+    std::vector<Vector4f>& getVelocities();
+    std::vector<char>& getToReposition();
 private:
     std::vector<Vector4f> positions;
     std::vector<Vector4f> velocities;
     std::vector<char> toReposition;
 };
 
-const std::vector<Vector4f>& Cubes::getPositions()
+std::vector<Vector4f>& Cubes::getPositions()
 {
     return positions;
 }
 
-const std::vector<Vector4f>& Cubes::getVelocities()
+std::vector<Vector4f>& Cubes::getVelocities()
 {
     return velocities;
 }
-const std::vector<char>& Cubes::getToReposition()
+
+std::vector<char>& Cubes::getToReposition()
 {
     return toReposition;
 }
@@ -61,7 +62,7 @@ int main()
 {
     srand(time(nullptr));
     glfwInit();
-    GLFWwindow* window = glfwCreateWindow(800, 600, "magister", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(1920, 1080, "magister", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -106,8 +107,8 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glm::mat4 perspective = glm::perspective(glm::radians(90.0f), 800.0f/600.0f, 0.1f, 50.0f);
-    glm::mat4 looking = glm::lookAt(glm::vec3(10.0f, 7.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 perspective = glm::perspective(glm::radians(90.0f), 1920.0f/1080.0f, 0.1f, 50.0f);
+    glm::mat4 looking = glm::lookAt(glm::vec3(15.0f, 10.0f, 15.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
     BasicShader shader("Shaders/cube.vert", "Shaders/cube.geom", "Shaders/cube.frag");
     ComputeShader cShader("Shaders/terrain.comp");
@@ -116,7 +117,7 @@ int main()
 
     for(int i=0; i<1024; i++)
     {
-        Vector4f vel = {(double)(rand()/(double)RAND_MAX) * 10.0f - 5.0f, (double)(rand()/(double)RAND_MAX) * 10.0f, (double)(rand()/(double)RAND_MAX) * 10.0f - 5.0f, 0.0f};
+        Vector4f vel = {(double)(rand()/(double)RAND_MAX) * 20.0f - 10.0f, (double)(rand()/(double)RAND_MAX) * 30.0f, (double)(rand()/(double)RAND_MAX) * 20.0f - 10.0f, 0.0f};
         std::cout<<vel.x<<"   "<<vel.y<<"  "<<vel.z<<std::endl;
         cubes.addCube(vel);
     }
@@ -150,11 +151,10 @@ int main()
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, positions);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, velocities);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, removing);
-        cShader.setTime(0.0003f);
+        cShader.setTime(0.0009f);
         glDispatchCompute(cubes.getToReposition().size()/16, 1, 1);
         cShader.stop();
-
-
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 
         glfwPollEvents();
         glfwSwapBuffers(window);

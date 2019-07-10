@@ -27,8 +27,7 @@ void main()
 
     if(positions[index].y<(-20.0f))
     {
-        removing[index] = true;
-        positions[index] = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        velocities[index] = -velocities[index];
     }
 
 }
